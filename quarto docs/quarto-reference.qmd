@@ -1,0 +1,579 @@
+---
+title: "Quarto Reference Cheatsheet"
+author: "Your Name"
+date: today
+format: 
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: false
+    theme: cosmo
+execute:
+  echo: true
+  warning: false
+  message: false
+editor_options: 
+  chunk_output_type: console
+---
+
+# Document Metadata (YAML Header)
+
+The YAML header goes at the very top between `---` markers:
+
+```yaml
+---
+title: "My Document"
+author: "Your Name"
+date: "2026-01-21"
+format: 
+  html:
+    toc: true              # Table of contents
+    toc-depth: 2           # Heading levels in TOC
+    code-fold: true        # Collapsible code
+    theme: cosmo           # Bootstrap theme
+  pdf:
+    documentclass: article
+    geometry: margin=1in
+bibliography: references.bib
+execute:
+  echo: true              # Show code by default
+  warning: false          # Hide warnings
+  message: false          # Hide messages
+---
+```
+
+# Text Formatting
+
+## Basic Formatting
+
+- *italic* or _italic_
+- **bold** or __bold__
+- ***bold italic***
+- ~~strikethrough~~
+- `inline code`
+- [link text](https://example.com)
+- ![image caption](path/to/image.png)
+
+## Headers
+
+```markdown
+# Level 1 Header
+## Level 2 Header  
+### Level 3 Header
+#### Level 4 Header
+```
+
+## Lists
+
+**Unordered:**
+
+- Item 1
+- Item 2
+  - Sub-item 2a
+  - Sub-item 2b
+- Item 3
+
+**Ordered:**
+
+1. First item
+2. Second item
+   a. Sub-item
+   b. Sub-item
+3. Third item
+
+**Task lists:**
+
+- [ ] Unchecked item
+- [x] Checked item
+
+## Block Elements
+
+**Blockquote:**
+
+> This is a blockquote
+> Multiple lines
+
+**Horizontal rule:**
+---
+
+**Line breaks:**
+End line with two spaces  
+or use `<br>` for line break
+
+# Code Chunks
+
+## R Code Chunks
+
+```{r}
+#| label: r-example
+#| echo: true
+#| eval: true
+#| warning: false
+#| message: false
+
+# Load packages
+library(tidyverse)
+
+# Create data
+data <- data.frame(
+  x = 1:10,
+  y = rnorm(10)
+)
+
+# Create plot
+ggplot(data, aes(x, y)) +
+  geom_point() +
+  theme_minimal()
+```
+
+## Python Code Chunks
+
+```{python}
+#| label: python-example
+#| echo: true
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Create data
+df = pd.DataFrame({
+    'x': range(1, 11),
+    'y': np.random.randn(10)
+})
+
+# Create plot
+plt.scatter(df['x'], df['y'])
+plt.xlabel('X')
+plt.ylabel('Y')
+plt.show()
+```
+
+## SQL Code Chunks
+
+```{r}
+#| include: false
+#| eval: false
+
+# First establish database connection
+library(DBI)
+library(RSQLite)
+
+con <- dbConnect(SQLite(), "database.db")
+```
+
+```{sql}
+#| connection: con
+#| eval: false
+
+SELECT 
+    column1,
+    column2,
+    COUNT(*) as count
+FROM table_name
+WHERE condition = 'value'
+GROUP BY column1, column2
+ORDER BY count DESC
+LIMIT 10;
+```
+
+
+# Chunk Options
+
+Common chunk options (use `#|` prefix in Quarto):
+
+```{r}
+#| label: chunk-name           # Unique identifier
+#| echo: true                  # Show code (true/false)
+#| eval: true                  # Run code (true/false)
+#| include: true               # Include in output (true/false)
+#| warning: false              # Show warnings
+#| message: false              # Show messages
+#| error: false                # Show errors
+#| output: true                # Show output (true/false/asis)
+#| cache: false                # Cache results
+#| fig-width: 7                # Figure width in inches
+#| fig-height: 5               # Figure height in inches
+#| fig-cap: "Caption text"     # Figure caption
+#| fig-alt: "Alt text"         # Alternative text
+#| tbl-cap: "Table caption"    # Table caption
+#| code-fold: true             # Collapsible code
+#| code-summary: "Show code"   # Collapsed code label
+```
+
+# Tables
+
+## Markdown Tables
+
+```markdown
+| Column 1 | Column 2 | Column 3 |
+|----------|----------|----------|
+| Row 1    | Data     | More     |
+| Row 2    | Data     | More     |
+```
+
+Result:
+
+| Column 1 | Column 2 | Column 3 |
+|----------|----------|----------|
+| Row 1    | Data     | More     |
+| Row 2    | Data     | More     |
+
+## R Tables
+
+```{r}
+#| label: tbl-example
+#| tbl-cap: "Summary Statistics"
+
+library(knitr)
+
+# Using kable
+kable(head(mtcars))
+
+# Using gt (for fancy tables)
+# library(gt)
+# gt(head(mtcars))
+```
+
+## Cross-referencing Tables
+
+```{r}
+#| label: tbl-cars
+#| tbl-cap: "Motor Trend Car Data"
+
+kable(head(mtcars, 3))
+```
+
+Reference it: See @tbl-cars for the data.
+
+# Figures
+
+## Static Images
+
+```markdown
+![Caption text](path/to/image.png){#fig-id}
+
+Or with size control:
+![Caption](image.png){width=50%}
+```
+
+## Plots from Code
+
+```{r}
+#| label: fig-scatter
+#| fig-cap: "Scatterplot of X vs Y"
+#| fig-width: 6
+#| fig-height: 4
+
+plot(mtcars$wt, mtcars$mpg,
+     xlab = "Weight", 
+     ylab = "MPG",
+     main = "Car Weight vs MPG")
+```
+
+Reference it: See @fig-scatter for the relationship.
+
+## Multiple Figures
+
+```{r}
+#| label: fig-two-plots
+#| fig-cap: "Two plots side by side"
+#| fig-subcap: 
+#|   - "Plot A"
+#|   - "Plot B"
+#| layout-ncol: 2
+
+plot(1:10, 1:10)
+plot(1:10, 10:1)
+```
+
+# Math Equations
+
+## Inline Math
+
+Use single dollar signs: $E = mc^2$ or $\alpha + \beta = \gamma$
+
+## Display Math
+
+Use double dollar signs:
+
+$$
+f(x) = \int_{-\infty}^{\infty} e^{-x^2} dx
+$$
+
+$$
+\bar{X} = \frac{1}{n}\sum_{i=1}^{n} X_i
+$$
+
+## Common LaTeX Math
+
+```markdown
+Greek letters: $\alpha, \beta, \gamma, \Delta, \Omega$
+Subscripts: $x_i, x_{ij}$
+Superscripts: $x^2, x^{n+1}$
+Fractions: $\frac{a}{b}$
+Square root: $\sqrt{x}$
+Sum: $\sum_{i=1}^{n} x_i$
+Product: $\prod_{i=1}^{n} x_i$
+Integral: $\int_a^b f(x)dx$
+Limit: $\lim_{x \to \infty} f(x)$
+Matrices: $\begin{pmatrix} a & b \\ c & d \end{pmatrix}$
+```
+
+# Cross-References
+
+## Sections
+
+```markdown
+# Introduction {#sec-intro}
+
+See @sec-intro for details.
+```
+
+## Figures
+
+```{r}
+#| label: fig-plot
+#| fig-cap: "My plot"
+
+plot(1:10)
+```
+
+Reference: See @fig-plot
+
+## Tables
+
+```{r}
+#| label: tbl-data
+#| tbl-cap: "My table"
+
+kable(head(mtcars))
+```
+
+Reference: See @tbl-data
+
+## Equations
+
+$$
+E = mc^2
+$$ {#eq-einstein}
+
+Reference: See @eq-einstein
+
+# Citations and Bibliography
+
+## Citing Sources
+
+```markdown
+Blah blah [@citation2023].
+Blah blah [see @citation2023, pp. 20-23].
+@citation2023 says blah.
+Multiple citations [@citation2023; @another2024].
+```
+
+## Bibliography File
+
+Create `references.bib` file:
+
+```bibtex
+@article{citation2023,
+  title = {Article Title},
+  author = {Author Name},
+  journal = {Journal Name},
+  year = {2023},
+  volume = {10},
+  pages = {1--20}
+}
+```
+
+Add to YAML header:
+```yaml
+bibliography: references.bib
+```
+
+# Callout Blocks
+
+::: {.callout-note}
+This is a note callout.
+:::
+
+::: {.callout-warning}
+This is a warning callout.
+:::
+
+::: {.callout-important}
+This is an important callout.
+:::
+
+::: {.callout-tip}
+## Custom Title
+This is a tip with a custom title.
+:::
+
+::: {.callout-caution collapse="true"}
+## Collapsible Callout
+This callout is collapsed by default.
+:::
+
+# Columns and Layout
+
+## Two Columns
+
+::: {.columns}
+
+::: {.column width="50%"}
+Left column content
+:::
+
+::: {.column width="50%"}
+Right column content
+:::
+
+:::
+
+## Panel Layout
+
+::: {.panel-tabset}
+
+## Tab 1
+Content for tab 1
+
+## Tab 2
+Content for tab 2
+
+## Tab 3
+Content for tab 3
+
+:::
+
+# Divs and Spans
+
+## Custom Divs
+
+```markdown
+::: {.custom-class}
+Content with custom class
+:::
+
+::: {#custom-id}
+Content with custom ID
+:::
+```
+
+## Custom Spans
+
+```markdown
+[Text with custom class]{.custom-class}
+[Text with custom ID]{#custom-id}
+```
+
+# Code Execution Control
+
+## Document-level Options (YAML)
+
+```yaml
+execute:
+  echo: true      # Show all code
+  warning: false  # Hide all warnings
+  message: false  # Hide all messages
+  cache: true     # Cache all chunks
+  freeze: auto    # Freeze computational output
+```
+
+# Including External Files
+
+## Include R Script
+
+```{r}
+##| file: "external_script.R"
+```
+
+## Include Child Document
+
+```{r}
+##| child: "child_document.qmd"
+```
+
+# Inline Code
+
+You can include inline R code: `r 2 + 2` equals `r 2 + 2`.
+
+With Python: `{python} 2 + 2` (requires reticulate)
+
+# Publishing Options
+
+## HTML Options
+
+```yaml
+format:
+  html:
+    theme: cosmo
+    toc: true
+    toc-location: left
+    code-fold: true
+    code-tools: true
+    smooth-scroll: true
+    highlight-style: github
+```
+
+## PDF Options
+
+```yaml
+format:
+  pdf:
+    documentclass: article
+    papersize: letter
+    fontsize: 11pt
+    geometry: margin=1in
+    keep-tex: true
+```
+
+## Multiple Formats
+
+```yaml
+format:
+  html:
+    toc: true
+  pdf:
+    toc: true
+  docx:
+    toc: true
+```
+
+# Keyboard Shortcuts
+
+Common shortcuts in RStudio:
+
+- **Render document**: `Ctrl + Shift + K`
+- **Insert chunk**: `Ctrl + Alt + I`
+- **Run current chunk**: `Ctrl + Shift + Enter`
+- **Run current line**: `Ctrl + Enter`
+
+# Best Practices
+
+1. **Use meaningful chunk labels** for cross-referencing
+2. **Set global options** in YAML to avoid repetition
+3. **Cache expensive computations** with `cache: true`
+4. **Use `here` package** for file paths: `here::here("data/file.csv")`
+5. **Version control** your `.qmd` files (not rendered outputs)
+6. **Separate data cleaning** from analysis in different chunks
+7. **Comment your code** for future reference
+8. **Test rendering frequently** to catch errors early
+
+# Additional Resources
+
+- Official Quarto Guide: https://quarto.org/docs/guide/
+- Quarto Gallery: https://quarto.org/docs/gallery/
+- Awesome Quarto: https://github.com/mcanouil/awesome-quarto
+- Quarto Community: https://github.com/quarto-dev/quarto-cli/discussions
+
+---
+
+**Note**: This cheatsheet covers common Quarto features. For advanced features like:
+- Interactive widgets (htmlwidgets)
+- Shiny integration
+- RevealJS presentations
+- Website/book publishing
+- Custom formats
+
+Visit the official Quarto documentation at https://quarto.org
