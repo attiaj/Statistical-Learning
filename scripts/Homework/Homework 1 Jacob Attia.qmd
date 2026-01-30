@@ -11,7 +11,6 @@ format:
   html:
     echo: true
     toc: false              # Table of contents
-    code-fold: true        # Collapsible code
     theme: cosmo           # Bootstrap theme
   pdf:
     documentclass: article
@@ -125,6 +124,7 @@ If the Bayes decision boundary is non-linear, then we would expect the best valu
 ## a)
 
 ```{r}
+#| echo: true
 
 library(MASS) #ISLR2 package did not work, MASS contains Boston
 data(Boston)
@@ -146,6 +146,8 @@ dim(test)
 ## b)
 
 ```{r}
+#| echo: true
+
 library(caret)
 set.seed(1001)
 
@@ -176,18 +178,19 @@ slr_fit_ptratio$results$RMSE #RMSE = 7.91
 #Based on the above, fitting with rm as the predictor
 #returns the lowest RMSE of 6.52
 
-#Fit on the entire dataset using rm predictor
+#Fit on the entire training set using rm predictor
 slr_fit_rm_total <- train(medv ~ rm,
-                          data = Boston,
+                          data = train,
                           method = "lm",
                           trControl = trainControl(method = "none"))
 
-summary(slr_fit_rm_total)
 ```
 
 ## c)
 
 ```{r}
+#| echo: true
+
 set.seed(1001)
 kgrid <- expand.grid(k = c(1:100))
 
@@ -228,9 +231,9 @@ knn_fit_ptratio$results[k_opt_ptratio, "RMSE"]  #RMSE = 7.25
 
 #Best model is once again using rm predictor with RMSE = 5.95
 
-#Fit on whole dataset
+#Fit on entire training set
 knn_rm_tuned <- train(medv ~ lstat,
-                   data = Boston,
+                   data = train,
                    method = "knn",
                    tuneGrid = expand.grid(k = k_opt_rm),
                    trControl = trainControl(method = "none"))
@@ -240,19 +243,105 @@ knn_rm_tuned <- train(medv ~ lstat,
 ## d)
 
 ```{r}
+#| echo: true
+
 set.seed(1001)
 
-#Fit on whole dataset using SLR with rm predictor (best SLR model)
-slr_fit_rm_total <- train(medv ~ rm,
-                          data = Boston,
-                          method = "lm",
-                          trControl = trainControl(method = "none"))
+# predict on test set using the best models from part b and c
 
-#Fit on whole dataset using tuned KNN with rm predictor (best KNN)
-knn_rm_tuned <- train(medv ~ lstat,
-                   data = Boston,
-                   method = "knn",
-                   tuneGrid = expand.grid(k = k_opt_rm),
-                   trControl = trainControl(method = "none"))
+slr_test_pred <- predict(slr_fit_rm_total, newdata = test)
+knn_test_pred <- predict(knn_rm_tuned, newdata = test)
 
+# Calculate test RMSE
+slr_test_rmse <- sqrt(mean((test$medv - slr_test_pred)^2))
+knn_test_rmse <- sqrt(mean((test$medv - knn_test_pred)^2))
+
+# Display results
+slr_test_rmse
+knn_test_rmse
+
+#Overall, KNN is best for this dataset
+
+
+```
+
+# Problem 3
+
+## a)
+
+```{r}
+#| echo: true
+
+set.seed(1234567)
+n <- nrow(iris)
+
+# Randomly assign each observation to a fold (1-5)
+fold_ids <- sample(rep(1:5, length.out = n))
+
+
+```
+
+## b)
+
+```{r}
+#| echo: true
+
+# Training data: folds 1-4
+train_data <- iris[fold_ids != 5, ]
+# Test data: fold 5
+test_data <- iris[fold_ids == 5, ]
+
+# Fit SLR model: Petal.Length ~ Sepal.Length
+model_fold5 <- lm(Petal.Length ~ Sepal.Length, data = train_data)
+
+# Predict on fold 5
+predictions_fold5 <- predict(model_fold5, newdata = test_data)
+
+# Calculate MSE for fold 5
+mse_fold5 <- mean((test_data$Petal.Length - predictions_fold5)^2)
+
+mse_fold5
+```
+
+## c)
+
+```{r}
+#| echo: true
+
+# Repeat the process for folds 1-4 as the test sets
+train_data <- iris[fold_ids != 4, ]
+test_data <- iris[fold_ids == 4, ]
+
+model_fold4 <- lm(Petal.Length ~ Sepal.Length, data = train_data)
+predictions_fold4 <- predict(model_fold4, newdata = test_data)
+mse_fold4 <- mean((test_data$Petal.Length - predictions_fold4)^2)
+
+train_data <- iris[fold_ids != 3, ]
+test_data <- iris[fold_ids == 3, ]
+
+model_fold3 <- lm(Petal.Length ~ Sepal.Length, data = train_data)
+predictions_fold3 <- predict(model_fold3, newdata = test_data)
+mse_fold3 <- mean((test_data$Petal.Length - predictions_fold3)^2)
+
+train_data <- iris[fold_ids != 2, ]
+test_data <- iris[fold_ids == 2, ]
+
+model_fold2 <- lm(Petal.Length ~ Sepal.Length, data = train_data)
+predictions_fold2 <- predict(model_fold2, newdata = test_data)
+mse_fold2 <- mean((test_data$Petal.Length - predictions_fold2)^2)
+
+train_data <- iris[fold_ids != 1, ]
+test_data <- iris[fold_ids == 1, ]
+
+model_fold1 <- lm(Petal.Length ~ Sepal.Length, data = train_data)
+predictions_fold1 <- predict(model_fold1, newdata = test_data)
+mse_fold1 <- mean((test_data$Petal.Length - predictions_fold1)^2)
+```
+
+## d)
+
+```{r}
+averageMSE = mean(c(mse_fold5, mse_fold4, mse_fold3, mse_fold2, mse_fold1))
+
+averageMSE #Average MSE from all 5 folds = 0.770
 ```

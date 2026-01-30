@@ -1,0 +1,348 @@
+---
+title: "Homework 1"
+format: html
+---
+
+---
+title: "Homework 1"
+author: "Jacob Attia"
+date: "2026-01-29"
+format: 
+  html:
+    echo: true
+    toc: false              # Table of contents
+    theme: cosmo           # Bootstrap theme
+  pdf:
+    documentclass: article
+    geometry: margin=1in
+execute:
+  echo: true              # Show code by default
+  warning: false          # Hide warnings
+  message: false          # Hide messages
+---
+
+# Problem 1
+
+## a) Compute $\text{Var}(\hat{f}(x_0))$
+
+For KNN model, the value of $\hat{f}(x_0)$ is estimated using the the K values closest to it:
+
+$$\hat{f}(x_0) = \frac{1}{K}\sum_{i=1}^{K} Y_{(i)}$$ Where $Y_{(i)}$ represents the i-th nearest neighbor's response value.
+
+Assuming observations are independent, we have:
+
+$$\text{Var}(\bar{Y}) = \frac{\text{Var}(Y)}{n}$$
+
+Therefore,
+
+$$\text{Var}(\hat{f}(x_0)) = \frac{\text{Var}(Y)}{K} = \frac{\sigma^2}{K}$$ \## b)
+
+From our derived equation, it is evident that variance increases as K decreases, and variance decreases as K increases.
+
+Using the book's definition of variance as an estimate of how much $\hat{f}(x_0)$ would change if estimated using different training data, if K increases, we have more training data, which would lead to more consistent estimates, and if K decreases, we have less training data, which would lead to less consistent estimates. This makes sense.
+
+## c)
+
+### i)
+
+As K decreases, KNN regression will fit the training data more accurately, though this can lead to overfitting. Since it fits more accurately, we know K = 10 will have lower training MSE than K = 30.
+
+### ii)
+
+However, the test MSE depends on the bias-variance tradeoff. Lower K values will have less bias but higher variance, and higher K values will have less variance but higher bias. This depends on the true underlying function, and the amount of noise, so we do not know which will yield a lower test MSE.
+
+# 2.4 Problem 1
+
+## a)
+
+With a large n, small p, we expect flexible models to perform better since more data means variance is controlled, and flexible models won't be as susceptible to overfitting.
+
+## b)
+
+With a small n, large p, we expect inflexible models to perform better, since flexible models will have a high risk of overfitting, and there's not enough data to estimate complex relationships reliably.
+
+## c)
+
+If the true relationship betweeen the predictors and response is very non-linear, then we expect flexible models to perform better, since inflexible models will have high bias due to their inability to capture the non-linear relationship.
+
+## d)
+
+If there's a high variance of errors, flexible models will be more susceptible to fitting the noise. Due to this, we expect inflexible models to perform better, since they have lower variance.
+
+# 2.4 Problem 2
+
+## a)
+
+In this scenario, the response variable is CEO salary, therefore this is a regression problem, and since we want to understand which predictors affect CEO salary, our main interest is inference. The predictors are profit, number of employees, and industry, so p = 3. We've collected data from 500 firms, so n = 500.
+
+## b)
+
+In this scenario, since our response variable is a boolean value of success/failure, this is a classification problem. Our main goal is prediction, since we are trying to classify a product's potential status as a success/failure based on the predictors. Our predictors are price, marketing budget, competition price, and 10 other variables, for a total of p = 13. Data has been collected on 20 similar products, so n = 20.
+
+## c)
+
+In this scenario, our response variable is a % change, so this is a regression problem. Our goal is prediction, since we are not interested as much in understanding relationships. Our predictors are % change in the US market, British market, and German market, so p = 3. We have weekly data for one year, so n = 52.
+
+# 2.4 Problem 5
+
+If we think in terms of MSE as a model performance metric, models can be evaluated based on their variance and bias. With flexible models, the advantage is lower bias, while the disadvantage is higher variance. With inflexible models, the advantage is lower variance, while the disadvantage is higher bias.
+
+If the training data is large or there is a clear non-linear relationship between the predictors and response variable, a more flexible model may be preferred to provide an accurate fit.
+
+If the training data is small, or we are interested in higher interpretability of the results, a less flexible model may be preferred.
+
+# 2.4 Problem 7
+
+## a)
+
+Observation 1: $\sqrt{(0-0)^2 + (3-0)^2 + (0-0)^2} = 3$
+
+Observation 2: $\sqrt{(2-0)^2 + (0-0)^2 + (0-0)^2} = 2$
+
+Observation 3: $\sqrt{(0-0)^2 + (1-0)^2 + (3-0)^2} = \sqrt{10}$
+
+Observation 4: $\sqrt{(0-0)^2 + (1-0)^2 + (2-0)^2} = \sqrt{5}$
+
+Observation 5: $\sqrt{(-1-0)^2 + (0-0)^2 + (1-0)^2} = \sqrt{2}$
+
+Observation 6: $\sqrt{(1-0)^2 + (1-0)^2 + (1-0)^2} = \sqrt{3}$
+
+## b)
+
+With K = 1, we predict our classification based on the single nearest neighbor, which is observation 5 according to Euclidean distance - therefore our prediction would be **Green**.
+
+## c)
+
+With K = 3, we predict our classification based on the 3 nearest neighbors, which are observations 2, 5, and 6. Two of these three observations are Red, therefore our prediction is **Red**.
+
+## d)
+
+If the Bayes decision boundary is non-linear, then we would expect the best value for K to be small, since smaller K values lead to more higher flexibility, which can capture non-linear boundaries more easily than higher K values, which lead to smoothness and higher linearity.
+
+# Problem 2
+
+## a)
+
+```{r}
+#| echo: true
+
+library(MASS) #ISLR2 package did not work, MASS contains Boston
+data(Boston)
+
+set.seed(1234567)
+
+n <- nrow(Boston)
+index <- sample(x = 1:n,
+                size = round(0.7*n),
+                replace = FALSE)
+
+train <- Boston[index, ]
+test <- Boston[-index, ]
+
+dim(train)
+dim(test)
+```
+
+## b)
+
+```{r}
+#| echo: true
+
+library(caret)
+set.seed(1001)
+
+#10-fold cv parameter
+cv <- trainControl(method = "cv",
+                   number = 10)
+
+#Fit three SLR models with age, rm, and ptratio predictors
+slr_fit_age <- train(medv ~ age,
+                 data = Boston,
+                 method = "lm",
+                 trControl = cv)
+
+slr_fit_rm <- train(medv ~ rm,
+                 data = Boston,
+                 method = "lm",
+                 trControl = cv)
+
+slr_fit_ptratio <- train(medv ~ ptratio,
+                 data = Boston,
+                 method = "lm",
+                 trControl = cv)
+
+slr_fit_age$results$RMSE #RMSE = 8.43
+slr_fit_rm$results$RMSE #RMSE = 6.52
+slr_fit_ptratio$results$RMSE #RMSE = 7.91
+
+#Based on the above, fitting with rm as the predictor
+#returns the lowest RMSE of 6.52
+
+#Fit on the entire training set using rm predictor
+slr_fit_rm_total <- train(medv ~ rm,
+                          data = train,
+                          method = "lm",
+                          trControl = trainControl(method = "none"))
+
+```
+
+## c)
+
+```{r}
+#| echo: true
+
+set.seed(1001)
+kgrid <- expand.grid(k = c(1:100))
+
+cv <- trainControl(method = "cv",
+                   number = 10)
+
+#Tune 3 KNN models on age, rm, ptratio 
+knn_fit_age <- train(medv ~ age,
+                 data = Boston,
+                 method = "knn",
+                 tuneGrid = kgrid,
+                 trControl = cv)
+
+knn_fit_rm <- train(medv ~ rm,
+                 data = Boston,
+                 method = "knn",
+                 tuneGrid = kgrid,
+                 trControl = cv)
+
+knn_fit_ptratio <- train(medv ~ ptratio,
+                 data = Boston,
+                 method = "knn",
+                 tuneGrid = kgrid,
+                 trControl = cv)
+
+k_opt_age <- knn_fit_age$bestTune$k
+k_opt_rm <- knn_fit_rm$bestTune$k
+k_opt_ptratio <- knn_fit_ptratio$bestTune$k
+
+k_opt_age #k = 75
+k_opt_rm #k = 29
+k_opt_ptratio #k = 2
+
+# Get CV RMSE for each at their optimal k
+knn_fit_age$results[k_opt_age, "RMSE"]  #RMSE = 8.41
+knn_fit_rm$results[k_opt_rm, "RMSE"]  #RMSE = 5.95
+knn_fit_ptratio$results[k_opt_ptratio, "RMSE"]  #RMSE = 7.25
+
+#Best model is once again using rm predictor with RMSE = 5.95
+
+#Fit on entire training set
+knn_rm_tuned <- train(medv ~ lstat,
+                   data = train,
+                   method = "knn",
+                   tuneGrid = expand.grid(k = k_opt_rm),
+                   trControl = trainControl(method = "none"))
+
+```
+
+## d)
+
+```{r}
+#| echo: true
+
+set.seed(1001)
+
+# predict on test set using the best models from part b and c
+
+slr_test_pred <- predict(slr_fit_rm_total, newdata = test)
+knn_test_pred <- predict(knn_rm_tuned, newdata = test)
+
+# Calculate test RMSE
+slr_test_rmse <- sqrt(mean((test$medv - slr_test_pred)^2))
+knn_test_rmse <- sqrt(mean((test$medv - knn_test_pred)^2))
+
+# Display results
+slr_test_rmse
+knn_test_rmse
+
+#Overall, KNN is best for this dataset
+
+
+```
+
+# Problem 3
+
+## a)
+
+```{r}
+#| echo: true
+
+set.seed(1234567)
+n <- nrow(iris)
+
+# Randomly assign each observation to a fold (1-5)
+fold_ids <- sample(rep(1:5, length.out = n))
+
+
+```
+
+## b)
+
+```{r}
+#| echo: true
+
+# Training data: folds 1-4
+train_data <- iris[fold_ids != 5, ]
+# Test data: fold 5
+test_data <- iris[fold_ids == 5, ]
+
+# Fit SLR model: Petal.Length ~ Sepal.Length
+model_fold5 <- lm(Petal.Length ~ Sepal.Length, data = train_data)
+
+# Predict on fold 5
+predictions_fold5 <- predict(model_fold5, newdata = test_data)
+
+# Calculate MSE for fold 5
+mse_fold5 <- mean((test_data$Petal.Length - predictions_fold5)^2)
+
+mse_fold5
+```
+
+## c)
+
+```{r}
+#| echo: true
+
+# Repeat the process for folds 1-4 as the test sets
+train_data <- iris[fold_ids != 4, ]
+test_data <- iris[fold_ids == 4, ]
+
+model_fold4 <- lm(Petal.Length ~ Sepal.Length, data = train_data)
+predictions_fold4 <- predict(model_fold4, newdata = test_data)
+mse_fold4 <- mean((test_data$Petal.Length - predictions_fold4)^2)
+
+train_data <- iris[fold_ids != 3, ]
+test_data <- iris[fold_ids == 3, ]
+
+model_fold3 <- lm(Petal.Length ~ Sepal.Length, data = train_data)
+predictions_fold3 <- predict(model_fold3, newdata = test_data)
+mse_fold3 <- mean((test_data$Petal.Length - predictions_fold3)^2)
+
+train_data <- iris[fold_ids != 2, ]
+test_data <- iris[fold_ids == 2, ]
+
+model_fold2 <- lm(Petal.Length ~ Sepal.Length, data = train_data)
+predictions_fold2 <- predict(model_fold2, newdata = test_data)
+mse_fold2 <- mean((test_data$Petal.Length - predictions_fold2)^2)
+
+train_data <- iris[fold_ids != 1, ]
+test_data <- iris[fold_ids == 1, ]
+
+model_fold1 <- lm(Petal.Length ~ Sepal.Length, data = train_data)
+predictions_fold1 <- predict(model_fold1, newdata = test_data)
+mse_fold1 <- mean((test_data$Petal.Length - predictions_fold1)^2)
+```
+
+## d)
+
+```{r}
+averageMSE = mean(c(mse_fold5, mse_fold4, mse_fold3, mse_fold2, mse_fold1))
+
+averageMSE #Average MSE from all 5 folds = 1.052
+```
+
