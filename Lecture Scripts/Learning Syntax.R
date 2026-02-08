@@ -111,3 +111,25 @@ batting_tbl |>
   mutate(Extra_Base_Hits = Doubles + Triples + HR,
          Singles = H - Extra_Base_Hits) |>
   select(playerID, teamID, Singles, Doubles:HR, H, Extra_Base_Hits)
+
+f <- function(n) {
+  2 * (1 - pnorm(6.71 * sqrt(n) / sqrt(393 - n)))
+}
+
+# Create a sequence of n values (must be less than 393)
+n_values <- seq(20, 100, by = 1)
+
+# Calculate the function values
+y_values <- f(n_values)
+
+# Plot
+plot(n_values, y_values, 
+     type = "l",  # line plot
+     xlab = "n",
+     ylab = "2(1 - Φ(6.71√n/√(393-n)))",
+     main = "Function Plot",
+     col = "blue",
+     lwd = 2)
+
+# Add a grid for readability
+grid()
