@@ -1,0 +1,472 @@
+---
+title: "Homework 2"
+format: html
+---
+
+---
+title: "Homework 2"
+author: "Jacob Attia"
+date: "2026-02-13"
+format: 
+  html:
+    echo: true
+    toc: false              # Table of contents
+    theme: cosmo           # Bootstrap theme
+  pdf:
+    documentclass: article
+    geometry: margin=1in
+execute:
+  echo: true              # Show code by default
+  warning: false          # Hide warnings
+  message: false          # Hide messages
+---
+
+# Section 3.7
+
+## Problem 3:
+
+### a)
+
+If we take the difference between $\hat{Y}_{C}$ and $\hat{Y}_{HS}$ then we end up with the equation $\hat{Y}_{C}$ - $\hat{Y}_{HS}$ = 35 - 10 \* GPA. (Provided IQ and GPA are fixed values)\
+
+i\) is incorrect because, if GPA is fixed to be below 3.5, the above equation is positive, meaning college students will earn more than high school students on average.
+
+ii\) is incorrect because, if GPA is fixed to be above 3.5, high school will earn more on average.
+
+iii\) is correct because, if GPA is fixed to be above 3.5, high school students will earn more on average.
+
+iv\) is incorrect, because there is an upper bound, not a lower bound, on GPA (3.5), that causes college students to earn more than high school students on average.
+
+### b)
+
+For a college graduate with an IQ of 110, and GPA of 4.0, the prediction is as follows:
+
+$\hat{Y}$ = 50 + 20(4.0) + 0.07(110) + 35(1) + 0.01(4.0)(110) + (-10)(4.0)(1) = 137.1
+
+Therefore, the predicted salary of a college graduate with these qualities is \$137,100
+
+### c)
+
+This is false, because, even if the coefficient is small, if the coefficient's SE is small, it can still be statistically significant. If we take into account a high GPA and a high IQ, even a coefficient of 0.01 can produce a value of over 5, meaning there is still relevant impact on the prediction.
+
+## Problem 4)
+
+### a)
+
+Since the cubic model effectively contains the linear model, with 2 extra parameters, we expect the cubic model's RSS to be lower than the linear model's RSS, because the cubic model is more flexible, so it is expected that it fits the training data more accurately than the linear model. Perhaps this would be due to the cubic model fitting more noise than the linear model, but the result would still be a lower RSS than the linear model. It is possible for the RSS of both to be the same, if the 2nd and 3rd coefficients in the cubic model turn out to be completely irrelevant in the training data, but this is quite unlikely.
+
+### b)
+
+Considering that the true relationship between X and Y is linear, we expect the linear model to have a lower RSS on the test data than the cubic model. Since the cubic model is more flexible, it would have fit more accurately to the points on the testing data, including possibilities of noise and overfitting. But if the true relationship is linear, then the linear model will have low bias and low variance on the test data, while the cubic model will have low bias but higher variance, therefore we expect it to have a higher RSS.
+
+## c)
+
+We expect the training RSS to be lower for the cubic model, because, if the true relationship is non-linear, the cubic model will fit more accurately to the training data, capturing the non-linearity more than the linear model.
+
+## d)
+
+In this case, we do not have enough information to tell which model will have a lower RSS on the test data. The linear model would have lower variance, but higher bias, while the cubic model would have higher variance, but lower bias. Since this scenario depends on the bias-variance tradeoff, and we do not know exactly how non-linear the true relationship is, we can't determine which model will have a lower RSS.
+
+# Section 6.6
+
+## Problem 1:
+
+### a)
+
+Since the best subset selection method examines all possible p Choose k models with k predictors, while forward and backward selection methods examine only a subset of the models that best subset selection does, we can determine that best subset selection has the smallest training RSS.
+
+### b)
+
+Even though best subset will have the best training RSS, that does not mean it will have the best test RSS. Best subset may overfit, and stepwise methods may generalize more accurately. The bias-variance tradeoff comes into play, and without knowing the true model, we can't determine which method will have the best test RSS.
+
+### c)
+
+i\)
+
+True - Forward stepwise starts with 0 predictors, then adds the best predictor, then the best second predictor and so on. Therefore, the k+1 variable model is obtained by adding one predictor from the k variable model, and thus the k variable model is a subset of the k+1 variable model.
+
+ii\)
+
+True - backward stepwise starts with p predictors, then removes one, and repeats the process. Therefore, the k model is obtained by removing one predictor from the k+1 model, and thus the k variable model is a subset of the k+1 variable model.
+
+iii\)
+
+False - forward stepwise and backward stepwise are different methods of searching through the predictors. Disregarding the size of the models at k or k+1 for either method, the methods may simply contain different predictors due to their differing algorithms, therefore, there's no reason to believe one could be a subset of another.
+
+iv\)
+
+False - forward stepwise and backward stepwise are different methods of searching through the predictors. Disregarding the size of the models at k or k+1 for either method, the methods may simply contain different predictors due to their differing algorithms, therefore, there's no reason to believe one could be a subset of another.
+
+v\)
+
+False - during each iteration, best subset picks the best combo of k predictors. For the k+1's iteration, the best possible combo of k+1 predictors may not necessarily contain all the predictors that were the best for the k-th iteration.
+
+## Problem 2:
+
+### a)
+
+i\)
+
+Incorrect, Lasso is less flexible than least squares. due to the penalty it adds to the RSS.
+
+ii\)
+
+Incorrect, Lasso is less flexible than least squares. due to the penalty it adds to the RSS.
+
+iii\)
+
+Correct, Lasso is less flexible, and due to the bias-variance tradeoff, when it has a smaller increase in bias relative to its decrease in variance, the prediction accurary will improve.
+
+iv\)
+
+Incorrect, Lasso is less flexible, meaning its variance decreases, while its bias increases. The statement supposes an increase in variance compared to least squares, which is opposite from what occurs between the 2.
+
+## Problem 3:
+
+### a)
+
+iv\) is correct - as s increases, constraints on coefficients become more relaxed, allowing for larger coefficient values, which leads to more flexibility in the model, which decreases the training RSS over time.
+
+### b)
+
+ii\) is correct, due the bias-variance tradeoff. At s = 0, we have exceptionally high bias, with very low variance, leading to a high RSS. As s increases from there, our bias decrease, while variance increases. If bias decreases more than variance increases, test RSS decreases. At some value of s, the bias-variance tradeoff reaches an optimal point (the bottom of the U curve). From there, bias will decrease, but variance will increase rapidly, leading to a higher test RSS.
+
+### c)
+
+iii\) is correct. As s increases, the relaxation on coefficients will increase, leading to more and more flexible models. As the flexibility of models increases, so does the variance.
+
+### d)
+
+iv\) is correct. As s increases, the relaxation on coefficients will increase, leading to more and more flexible models. As the flexibility of models increases, the bias decreases, since models will fit the training data more and more accurately.
+
+### e)
+
+v\) is correct. Irreducible error represents the variance of the error term, in other words, it represents noise that cannot be reduced by any model, therefore it will not change as our model changes by increasing s.
+
+## Problem 4
+
+### a)
+
+iii\) is correct. As lambda increases, the constraints on our coefficients increase, making the model more and more inflexible, which increases the training RSS as lambda gets larger.
+
+### b)
+
+ii\) is correct. As lambda increases, the bias increases, while variance decreases from the bias-variance highest point at lambda = 0. At some point, the bias-variance tradeoff will reach an optimal point, then bias will continue to increase while variance decreases further, increasing the test RSS.
+
+### c)
+
+iv\) is correct. At lambda = 0, the model is at its most flexible point, then steadily becomes more and more inflexible as lamdda increases. As inflexibility increases, variance decreases.
+
+### d)
+
+iii\) is correct. Since the model becomes more inflexible as lambda increases, bias will increase with it as well.
+
+### e)
+
+v\) is correct. Irreducible error represents the variance of the error term, in other words, it represents noise that cannot be reduced by any model, therefore it will not change as our model changes by increasing lambda.
+
+## Implementation Problem 1:
+
+### a)
+
+```{r}
+library(tidyverse)
+
+bike_share <- read_csv("https://www4.stat.ncsu.edu/online/datasets/SeoulBikeData.csv",
+                       local = locale(encoding = "latin1"))
+
+bike_share <- bike_share |>
+  rename("date" = "Date",
+         "rented_bike_count" = `Rented Bike Count`,
+         "hour" = "Hour",
+         "temperature" = `Temperature(°C)`,
+         "humidity" = `Humidity(%)`,
+         "wind_speed" = `Wind speed (m/s)`,
+         "visibility" = `Visibility (10m)`,
+         "dew_point_temperature" = `Dew point temperature(°C)`,
+         "solar_radiation" = `Solar Radiation (MJ/m2)`,
+         "rainfall" = `Rainfall(mm)`,
+         "snowfall" = `Snowfall (cm)`,
+         "seasons" = "Seasons",
+         "holiday" = "Holiday",
+         "functioning_day" = "Functioning Day" 
+         ) |>
+  mutate(date = dmy(date), #convert the date variable from character
+         seasons = factor(seasons),
+         holiday = factor(holiday),
+         functioning_day = factor(functioning_day),
+         log_rented_bike_count = log(rented_bike_count)) |>
+  filter(functioning_day == "Yes")
+
+library(caret)
+set.seed(123)
+
+train_index <- createDataPartition(bike_share$log_rented_bike_count, 
+                                   p = 0.7,  # 70% training
+                                   list = FALSE)
+
+# Split the data
+bike_train <- bike_share[train_index, ]
+bike_test <- bike_share[-train_index, ]
+
+# Check the sizes
+nrow(bike_train)  
+nrow(bike_test)
+
+```
+
+### b)
+
+```{r}
+#Create tuning grid
+tune_grid <- expand.grid(
+  alpha = seq(0, 1, by = 0.1),           
+  lambda = seq(0.001, 0.1, by = 0.005)   
+  )
+
+head(tune_grid)
+
+elastic_fit <- train(
+  log_rented_bike_count ~ .,   
+  data = bike_train,             
+  method = "glmnet",             
+  preProcess = c("center", "scale"),  
+  tuneGrid = tune_grid,          
+  trControl = trainControl(
+    method = "cv",               
+    number = 5                   
+  )
+)
+
+elastic_fit$bestTune
+#best tuning parameters: alpha = 0.1, lambda = 0.001
+
+```
+
+### c)
+
+```{r}
+# Make predictions on test set
+test_predictions <- predict(elastic_fit, newdata = bike_test)
+
+# Calculate RMSE
+test_rmse <- RMSE(pred = test_predictions, 
+                  obs = bike_test$log_rented_bike_count)
+
+#test RMSE = 0.5352
+test_rmse
+```
+
+## Problem 2:
+
+### a)
+
+```{r}
+library(tidyverse)
+data(trees)
+
+#First plot: height vs girth
+ggplot(trees, aes(x = Girth, y = Height)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(title = "Tree Height vs Girth",
+       x = "Girth",
+       y = "Height")
+
+#Second plot: height vs volume
+ggplot(trees, aes(x = Volume, y = Height)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(title = "Tree Height vs Volume",
+       x = "Volume (cubic feet)",
+       y = "Height (feet)")
+```
+
+### b)
+
+```{r}
+
+#Fit main effect model
+model1 <- lm(Height ~ Girth + Volume, data = trees)
+summary(model1)
+
+plot(model1)
+```
+
+Girth p-value = 0.1188, since this is higher than the standard cutoff of 0.05, we fail to reject the null hypothesis, and therefore Girth is not statistically significant. Volume p-value = 0.0145, since this is lower than the standard cutoff of 0.05, we reject the null hypothesis, and therefore Volume is statistically significant.
+
+On the Residuals vs. Fitted plot, there seems to be no clear patterns, leading to the conclusion that the model is adequate.
+
+On the QQ plot, the points adhere to the diagonal line quite well, leading to the conclusion that normality of residuals holds.
+
+On the Scale-Location plot, the line is relatively flat, and points are mostly scattered randomly, leading to the mostly-confident conclusion that homoscedasticity holds.
+
+On the Residuals vs Leverage plot, we see no highly influential points. Some observations are far from the line, but with low leverage, while the points with more leverage are within a safe distance from the line.
+
+### c)
+
+```{r}
+model1 <- lm(Height ~ Girth + Volume, data = trees)
+
+#Create prediction data
+new_data <- data.frame(Girth = 10, Volume = 12)
+
+#Make prediction
+prediction <- predict(model1, newdata = new_data)
+prediction
+
+#Predicted height is 71.5878
+```
+
+### d)
+
+```{r}
+
+#Model fit with main effects and interaction term
+model2 <- lm(Height ~ Girth + Volume + Girth:Volume, data = trees)
+summary(model2)
+plot(model2)
+```
+
+p-value of Girth is 0.035, less than the standard cutoff of 0.05, so it is statistically significant, opposed to the finding in the previous model that only dealt with main effects. p-value of Volume is 0.0006, so it is very significant, and the p-value of the interaction term is 0.0067, so it is quite significant as well.
+
+Residuals vs Fitted plot shows no clear pattern, indicating that the model is adequate.
+
+QQ plot shows strong adherence to the line aside from a few values that are slightly off, indicating that normality of errors holds.
+
+Scale-Location plot shows a mostly straight line, with no clear pattern, points scattered randomly, indicating that homoscedasticity holds.
+
+Residuals vs Leverage plot shows most points having low leverage, with a couple points having slightly more leverage and distance from the line, indicating a lack of strongly influential points.
+
+In the first model, Girth was not statistically significant, with a high p-value, but in this model, it became significant when the interaction term was included. This suggests that Girth does have an important effect, but the effect depends on Volume.
+
+### e)
+
+```{r}
+model2 <- lm(Height ~ Girth + Volume + Girth:Volume, data = trees)
+
+#Create prediction data
+new_data <- data.frame(Girth = 10, Volume = 12)
+
+#Make prediction
+prediction <- predict(model2, newdata = new_data)
+prediction
+
+#Predicted height is 68.04
+```
+
+### f)
+
+```{r}
+
+#Simple linear model with just Volume
+model_simple <- lm(Height ~ Volume, data = trees)
+
+#Cubic polynomial model
+model_poly <- lm(Height ~ Volume + I(Volume^2) + I(Volume^3), data = trees)
+
+summary(model_simple)
+summary(model_poly)
+
+anova(model_simple, model_poly)
+```
+
+The test yielded an p-value of 0.098, which is greater than 0.05, leading to the conclusion that the squared/cubic terms are not jointly statistically significant. The simpler model with just Volume is more adequate for predicting Height.
+
+## Problem 3
+
+```{r}
+library(ISLR2)
+data(Carseats)
+
+library(caret)
+set.seed(123)
+
+#create 80/20 split
+train_index <- createDataPartition(Carseats$Sales, 
+                                   p = 0.8,  # 80% training
+                                   list = FALSE)
+
+carseats_train <- Carseats[train_index, ]
+carseats_test <- Carseats[-train_index, ]
+
+library(leaps)
+
+#perform best subset method
+best_subset <- regsubsets(Sales ~ ., 
+                          data = carseats_train,
+                          nvmax = 10)  
+
+best_summary <- summary(best_subset)
+metrics <- data.frame(aic = best_summary$cp,
+                      bic = best_summary$bic,
+                      adjR2 = best_summary$adjr2)
+metrics |>
+  round(3)
+
+#metrics df shows that 7 predictors is the optimal model size (lowest AIC&BIC, with highest adjR2)
+
+#list of predictors from best subset model
+coef(best_subset, 7) |>
+  round(3)
+
+
+forward <- regsubsets(Sales ~ ., 
+                          data = carseats_train,
+                          nvmax = 10,
+                          method = "forward")  
+
+forward_summary <- summary(forward)
+forward_metrics <- data.frame(aic = forward_summary$cp,
+                      bic = forward_summary$bic,
+                      adjR2 = forward_summary$adjr2)
+
+#Forward stepwise also gives the same conclusion, 7 predictors
+forward_metrics |>
+  round(3)
+
+coef(forward, 7) |>
+  round(3)
+
+backward <- regsubsets(Sales ~ ., 
+                          data = carseats_train,
+                          nvmax = 10,
+                          method = "backward")  
+
+backward_summary <- summary(backward)
+backward_metrics <- data.frame(aic = backward_summary$cp,
+                      bic = backward_summary$bic,
+                      adjR2 = backward_summary$adjr2)
+
+#Backward stepwise gives the same conclusion as well, 7 predictors
+backward_metrics |>
+  round(3)
+
+coef(backward, 7) |>
+  round(3)
+```
+
+```{r}
+best_full <- regsubsets(Sales ~ ., 
+                        data = Carseats, 
+                        nvmax = 10)
+forward_full <- regsubsets(Sales ~ ., 
+                           data = Carseats, 
+                           nvmax = 10, 
+                           method = "forward")
+backward_full <- regsubsets(Sales ~ ., 
+                            data = Carseats, 
+                            nvmax = 10, 
+                            method = "backward")
+
+#Best Subset Final (7 predictors)
+round(coef(best_full, 7), 3)
+
+#Forward Final (7 predictors)
+round(coef(forward_full, 7), 3)
+
+#Backward Final (7 predictors)
+round(coef(backward_full, 7), 3)
+
+#All three methods yielded the same number of predictors, and coefficients for those predictors.
+```
